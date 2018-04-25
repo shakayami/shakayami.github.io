@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>lve</title>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  },
+  CommonHTML: { matchFontHeight: false }
+});
+</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=Shift-JIS" />
+
+</head>
+<body>
+<h1>ロトカ・ヴォルテラ方程式</h1>
+ロトカヴォルテラ方程式は生物学において、喰う・喰われるの関係にある二者の個体量の変化をモデル化したものである
+$$
+\frac{dx}{dt}=ax-bxy,\frac{dy}{dt}=cxy-dy
+$$
+という式である。詳しくはWikipediaでも見てくれればいいのだが、今回はこの微分方程式をルンゲクッタ法を使って数値計算してみた。
+なお、シミュレーションにはPython3,描画にはmatplotlibを使用した。
+ソースコードは以下に示すとおりである。
+<script src="https://gist.github.com/shakayami/2dc48b3ebe099fce2dc6ea913f5e04ec.js"></script>
+これを動画として投稿したものが以下のようになる。なお複数の点にしたいのならば#で囲まれた部分をコメントアウトしている文に置き換えよう。
+<iframe width="560" height="315" src="https://www.youtube.com/embed/T7lwGdX1_Cg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<br>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/iWdjoyQp5rQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<br>
+<hr>
+<a href="index.html">戻る</a><br>
+<a href="../index.html">トップに戻る</a><br>
+</body>
+</html>

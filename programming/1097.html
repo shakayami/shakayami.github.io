@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title>mod 10^9+7</title>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  },
+  CommonHTML: { matchFontHeight: false }
+  });
+  </script>
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift-JIS" />
+
+</head>
+<body>
+  <h1>10<sup>9</sup>+7で割ったあまりを考えるプログラム</h1>
+<p>
+  競技プログラミングでは、10の9乗足す7で割った余りを求めるような問題が多く存在している。
+  それは答えが大きくなる問題についての対処であり、
+  なぜ10の９乗足す7なのかというとその数が素数だからである。
+</p>
+<p>
+  この手の問題は多くある上にわざわざ何回も同じプログラムを書くのは面倒なので、ライブラリみたいな形として残そうと思ったのがこの記事を書こうと思ったきっかけである。
+  アルゴリズムのアイディア自体は自分が考えたものではないのでそこは容赦してほしい。
+  また、言語はPython3を使用している。
+</p>
+<h2>プログラム</h2>
+<script src="https://gist.github.com/shakayami/c7eee28770ed2917d72df0eec5b2fa36.js"></script>
+剰余の法を変えるためには、変数characteristicの値を変更すれば良い。ただし変更したあとの値が素数でないとバグが発生する（未確認だけど）
+また、divideはexponenとtimesが両方定義されていないと使えないので、仮にコピペする場合はソースコードまるごと貼り付けたほうが無難。このコード自体は関数の宣言だけで終わっているので実行しても何も起こらない。
+<h2>プログラムの概要</h2>
+<ul>
+  <li>plus:足し算</li>
+  <li>minus:引き算</li>
+  <li>times:掛け算</li>
+  <li>exponen:累乗</li>
+  <li>divide:割り算</li>
+</ul>
+<h2>アルゴリズムのアイディア</h2>
+<ul>
+  <li>plus,minus,times:計算してから割って余りを求めるだけ</li>
+  <li>exponen:$a^b \mathrm{mod}\ p$を求めるために、まずは$b$を２進数表示にする。そこで$b=\sum_{i=1}^{k}2^{a_i},{a_1<\cdots < a_k,a_i\in\mathbb{N}}$となるとする。次に$a^{2^0}$から$a^{2^{a_k}}$までの数それぞれの$p$で割った余りを求める。
+  （これは前のリストの数を2乗して余りを求める作業を繰り返したら良い。）最後に$a^{2^{a_i}} \mathrm{mod}\ p=b_i$としたとき、$(\prod_{i=1}^{k}b_i) \mathrm{mod}\ p$を求めれば終了。
+  </li>
+  <li>
+    divide:フェルマーの小定理より、$a^{p-1}\equiv 1(\mathrm{mod} p)$が成立する。(ただし$p$は素数)
+    よって$a^{-1}\mathrm{mod}\ p\equiv a^{p-2}$であるため、これで計算することが可能。（exponenを使う。）
+  </li>
+</ul>
+<h2>計算量</h2>
+<ul>
+  <li>plus,minus,times:ご察し</li>
+  <li>exponen:2進数リストを作るのに$O(\log{N})$,余りリストを作るのと、掛け合わせるのそれぞれともに$O(\log{N})$なので、最終的な計算量は$O(\log{N})$である。（ただし累乗の方に乗っている数を$N$とおいた。）</li>
+  <li>divide:exponenを使っているので最終的な計算量は$O(\log{P})$となる。</li>
+</ul>
+<hr>
+<a href="index.html">戻る</a><br>
+<a href="../index.html">トップに戻る</a><br>
+
+</body>
+</html>
