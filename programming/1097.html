@@ -49,9 +49,11 @@
     よって$a^{-1}\mathrm{mod}\ p\equiv a^{p-2}$であるため、これで計算することが可能。（exponenを使う。）
   </li>
 </ul>
+つまり、変数characteristicの値が素数でないとうまくいかない理由はdivideでフェルマーの小定理を使用しているからである。
+（逆に言えば、divide以外はcharacteristicが素数でない場合でもうまくいく）
 <h2>計算量</h2>
 <ul>
-  <li>plus,minus,times:ご察し</li>
+  <li>plus,minus,times:言うまでもなく$O(1)$</li>
   <li>exponen:2進数リストを作るのに$O(\log{N})$,余りリストを作るのと、掛け合わせるのそれぞれともに$O(\log{N})$なので、最終的な計算量は$O(\log{N})$である。（ただし累乗の方に乗っている数を$N$とおいた。）</li>
   <li>divide:exponenを使っているので最終的な計算量は$O(\log{P})$となる。</li>
 </ul>
