@@ -1,129 +1,142 @@
 <html>
-<head>
-<title>
-gengenmath
-</title>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {
-  inlineMath: [['$','$'], ['\\(','\\)']],
-  processEscapes: true
-},
-CommonHTML: { matchFontHeight: false }
-});
-</script>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<h1>頭脳王優勝者の問題</h1>
-<p>
-頭脳王優勝者である河野玄斗（げんげん）氏が、2018年3月21日にtwitter上で数学の問題を投稿していた。
-</p>
-<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">俺が高1〜2の頃に作った問題置いとくので誰でも解いてください〜。高校数学の知識で解けます〜(文系もできる)。多分入試のレベルは逸脱してます〜。みんなぼちぼち解けてきた頃にいろいろ宣伝や発表しようかな〜。 <a href="https://t.co/YrV8P8ULNE">pic.twitter.com/YrV8P8ULNE</a></p>&mdash; 河野玄斗(げんげん) (@gengen_36) <a href="https://twitter.com/gengen_36/status/976396607951286272?ref_src=twsrc%5Etfw">2018年3月21日</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-こんな問題である。この問題を見たとき、五時間以上奮闘してなんとか解いたのだが、やはり難しい問題だった。
-彼はこの問題について忙しいからかは知らないが何も解説を書いていなかったので、暇な大学生である自分が解説を書こうと思った次第である。
-</p>
-<h2>解答</h2>
-<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">答えっぽいものは出たけど議論をもっと厳密にするべき部分がたくさんある上にまったく高校数学的な解法ではないというやつ <a href="https://t.co/9JnT0GPWO1">pic.twitter.com/9JnT0GPWO1</a></p>&mdash; しゃかやみ (@shakayami_) <a href="https://twitter.com/shakayami_/status/976504947893190656?ref_src=twsrc%5Etfw">2018年3月21日</a></blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>
-これに尽きる。ただこのまま記事を終えるだけでは味気ないのでどのように考えてこの解答に至ったかを示そうと思う。
-</p>
-<h2>どのようにして考えたか</h2>
-<p>
-求めるべき数式は
-$$\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{n^k}$$
-である。このままいきなり求めようとすると死ぬので、四季をある程度簡単な形にした場合にどのようになるかを考える。
-簡単にすると言っても、いろいろある。たとえば${}_{n-k}C_{k}$を${}_{n}C_{k}$とか、$n-{}_{k}C_{k}$に変換するとかである。（特に2番目はネタだが…間違えて解釈している人も多かったので書いた次第）
-まあとにかく、なぜシグマの足す範囲が$\lfloor \frac{n}{2}\rfloor$なのかを考えると、二項係数がうまく定義できる範囲が$n-k\geq k,n-k\geq 0$より$0\leq k\leq \lfloor \frac{n}{2}\rfloor$となくてはいけないということになる。
-逆に言えばあまり形を崩さないためには、シグマの足す範囲と二項係数の形${}_{n-k}C_{k}$は一定に保っていないといけないだろう。
-</p>
-<p>
-つまり問題の意図を崩さないまま易化させるにはたとえば次のように変換すればいいだろう。
-$$\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}{}_{n-k}C_k$$
-となる。これがどのような形になるのかは一瞬ではわからなかったので、実際に実験して$n$が小さい場合の値を求めてみると以下の表のようになる。
-<table border>
-<tr><td>$n$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-<tr><td>$\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}{}_{n-k}C_{k}$</td><td>1</td><td>2</td><td>3</td><td>5</td><td>8</td><td>13</td><td>21</td></tr>
-</table>
-勘が良ければ気づくが、これはフィボナッチ数列であるということに気づくわけである。実際にこれはフィボナッチ数列になる。
-</p>
-<p>
-フィボナッチであることを示すためにはいろいろな方法があるが、（げんげん氏は漸化式でやったのかと思われる）
-今回は母関数でやる方法を考えた。「フィボナッチ数列　二項係数　母関数」とググったらすぐに詳細が出てくるので、大体の流れだけ書くと、
-$$f(x)=\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}{}_{n-k}C_{k}x^n$$
-という関数の正体をわかればいいということである。母関数が一致しているならばもとの数列も一致している。（注：級数が収束するくらいに十分に$|x|$は小さいものとする。）
-シグマの足す順番を以下のように変える。それは
-</p>
-<table border>
-  <tr><td>x</td><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td><td><b>4</b></td><td><b>5</b></td></tr>
-  <tr><td><b>0</b></td><td>0</td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td></tr>
-  <tr><td><b>1</b></td><td>1</td><td>3</td><td>5</td><td>7</td><td>9</td><td>11</td></tr>
-  <tr><td><b>2</b></td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td></tr>
-  <tr><td><b>3</b></td><td>3</td><td>5</td><td>7</td><td>9</td><td>11</td><td>13</td></tr>
-  <tr><td><b>4</b></td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td><td>14</td></tr>
-  <tr><td><b>5</b></td><td>5</td><td>7</td><td>9</td><td>11</td><td>13</td><td>15</td></tr>
-</table>
-<p>から</p>
-<table border>
-  <tr><td>x</td><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td><td><b>4</b></td><td><b>5</b></td></tr>
-  <tr><td><b>0</b></td><td>0</td><td>1</td><td>2</td><td>3</td>><td>4</td><td>5</td></tr>
-  <tr><td><b>1</b></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
-  <tr><td><b>2</b></td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
-  <tr><td><b>3</b></td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
-  <tr><td><b>4</b></td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
-  <tr><td><b>5</b></td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
-</table>
-<p>
-というように変換する。すると元の式は
-$$\sum_{n=0}^{\infty}\sum_{k=0}^{n}{}_{n}C_{k}x^{n+l}$$
-$$=\sum_{n=0}^{\infty}(1+x)^nx^n$$
-$$=\sum_{n=0}^{\infty}(x^2+x)^n$$
-$$=\frac{1}{1-x-x^2}$$
-このとき、$x^2+x-1=0$の解を$\alpha,\beta$とおくと、$\alpha+\beta=-1,\alpha\beta=-1$となり、
-$$=\frac{1}{\alpha-\beta}\left(\frac{1}{\alpha -x}-\frac{1}{\beta -x}\right)$$
-$$=\frac{1}{\alpha-\beta}\left(\frac{1}{\alpha}\frac{1}{1-\frac{x}{\alpha}}-\frac{1}{\beta}\frac{1}{1-\frac{x}{\beta}}\right)$$
-$$=\frac{1}{\alpha-\beta}\sum_{n=0}^{\infty}\left(\alpha^{-n-1}x^{n}-\beta^{-n-1}x^n\right)$$
-$$=\frac{1}{\alpha-\beta}\sum_{n=0}^{\infty}(-1)^{n+1}\left(\beta^{n+1}-\alpha^{n+1}\right)x^n$$
-ここで、$\alpha=\frac{-1+\sqrt{5}}{2},\beta=\frac{-1-\sqrt{5}}{2}$であるから、
-$$=\frac{1}{\sqrt{5}}\sum_{n=0}^{\infty}\left(\left(\frac{1+\sqrt{5}}{2}\right)^{n+1}-\left(\frac{1-\sqrt{5}}{2}\right)^{n+1}\right)x^n$$
-$$=\sum_{n=0}^{\infty}F_{n+1}x^n$$
-というようになる。
-</p>
-<p>
-さて、この式をもとの問題に応用すると、壁にぶち当たる。というのもこれと同じ変換をやってしまうと、
-$$\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{n^k}x^n=\sum_{n=0}^{\infty}\sum_{k=0}^{n}\frac{{}_{n}C_{k}}{(n+k)^k}x^{n+k}$$
-となり、二項定理を使うことができない。$(n+k)^k$の変数の中身が$n+k$と$k$に依存しているためそれだけで解くことができなくなる。
-</p>
-<p>
-そこで小さな発想の転換が必要になる。依存を打ち消すには分母の依存性をうまく対処しなければいけない。そこで自分がやったことはあえて独立変数を増やそうとしたということである。
-$$g_{m,n}=\sum_{k=0}^{\lfloor\frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{m^k}$$
-とおいて、
-$$f_m(x)=\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}g_{m,n}x^n=\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{m^k}x^n$$
-としたうえで$g_{m,n}$を求めて、その上で$g_{n,n}$を求めればいいということである。
-実際このように変更した場合二項定理を使うことができる。
-$$=f_m(x)=\sum_{n=0}^{\infty}\sum_{k=0}^{\infty}\frac{{}_{n}C_{k}}{m^k}x^{n+k}$$
-$$=\sum_{n=0}^{\infty}\left(1+\frac{x}{m}\right)^nx^n$$
-$$=\sum_{n=0}^{\infty}\left(x+\frac{x^2}{m}\right)^n$$
-$$=\frac{1}{1-x-\frac{x^2}{m}}$$
-$$=\frac{m}{m-mx-x^2}$$
-よって分母を因数分解してというように（さっきやったのと同じ方法で）式を処理していくと、
-$$g_{m,n}=\frac{1}{\sqrt{1+\frac{4}{m}}}\left(\left(\frac{1+\sqrt{1+\frac{4}{m}}}{2}\right)^{n+1}-\left(\frac{1-\sqrt{1+\frac{4}{m}}}{2}\right)^{n+1}\right)$$
-というようになるので、与式は
-$$g_{n,n}=\frac{1}{\sqrt{1+\frac{4}{n}}}\left(\left(\frac{1+\sqrt{1+\frac{4}{n}}}{2}\right)^{n+1}-\left(\frac{1-\sqrt{1+\frac{4}{n}}}{2}\right)^{n+1}\right)$$
-というようになる。
-</p>
-<h2>講評</h2>
-<p>
-フィボナッチっぽいことには結構早い段階で気づいたが、そこから実際に解くにはかなり時間がかかったので方針を思いついても実行に時間がかかる難問である。（もちろんこんな問題を入試に出されたら死ぬ）
-まあとにかく、数学でよくわからなくなったときの対処法ラキング上位に入っている「単純な場合を考える」と、「小さな値を代入して挙動を観察する」ということを守ればフィボナッチと関連があることを見抜くのはそう難しくはない。
-そして変数を増やして複雑化しないと解けない問題という具体例を初めてみた気がする。
-</p>
-<hr>
-<a href="index.html">戻る</a><br>
-<a href="../index.html">トップに戻る</a>
-</body>
+  <head>
+    <title>gengenmath</title>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      },
+      CommonHTML: { matchFontHeight: false }
+      });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>  
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+      <h1>頭脳王優勝者の問題</h1>
+          <p class="lead">
+          頭脳王優勝者である河野玄斗（げんげん）氏が、2018年3月21日にtwitter上で数学の問題を投稿していた。  それは以下の数式を求める問題である。
+          </p>
+          <p class="lead">
+          $$\sum_{k=0}^{\lfloor\frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{n^k}$$
+          </p>
+          <p class="lead">
+          こんな問題である。この問題を見たとき、五時間以上奮闘してなんとか解いたのだが、やはり難しい問題だった。
+          彼はこの問題について忙しいからかは知らないが何も解説を書いていなかったので、暇な大学生である自分が解説を書こうと思った次第である。
+          </p>
+          <h2>解答</h2>
+          <blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">答えっぽいものは出たけど議論をもっと厳密にするべき部分がたくさんある上にまったく高校数学的な解法ではないというやつ <a href="https://t.co/9JnT0GPWO1">pic.twitter.com/9JnT0GPWO1</a></p>&mdash; しゃかやみ (@shakayami_) <a href="https://twitter.com/shakayami_/status/976504947893190656?ref_src=twsrc%5Etfw">2018年3月21日</a></blockquote>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <p class="lead">
+          これに尽きる。ただこのまま記事を終えるだけでは味気ないのでどのように考えてこの解答に至ったかを示そうと思う。
+          </p class="lead">
+          <h2>どのようにして考えたか</h2>
+          <p class="lead">
+          求めるべき数式は
+          $$\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{n^k}$$
+          である。このままいきなり求めようとすると死ぬので、四季をある程度簡単な形にした場合にどのようになるかを考える。
+          簡単にすると言っても、いろいろある。たとえば${}_{n-k}C_{k}$を${}_{n}C_{k}$とか、$n-{}_{k}C_{k}$に変換するとかである。（特に2番目はネタだが…間違えて解釈している人も多かったので書いた次第）
+          まあとにかく、なぜシグマの足す範囲が$\lfloor \frac{n}{2}\rfloor$なのかを考えると、二項係数がうまく定義できる範囲が$n-k\geq k,n-k\geq 0$より$0\leq k\leq \lfloor \frac{n}{2}\rfloor$となくてはいけないということになる。
+          逆に言えばあまり形を崩さないためには、シグマの足す範囲と二項係数の形${}_{n-k}C_{k}$は一定に保っていないといけないだろう。
+          </p>
+          <p class="lead">
+          つまり問題の意図を崩さないまま易化させるにはたとえば次のように変換すればいいだろう。
+          $$\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}{}_{n-k}C_k$$
+          となる。これがどのような形になるのかは一瞬ではわからなかったので、実際に実験して$n$が小さい場合の値を求めてみると以下の表のようになる。
+          <table class="table table-striped table-bordered">
+          <tr><td>$n$</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+          <tr><td>$\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}{}_{n-k}C_{k}$</td><td>1</td><td>2</td><td>3</td><td>5</td><td>8</td><td>13</td><td>21</td></tr>
+          </table>
+          勘が良ければ気づくが、これはフィボナッチ数列であるということに気づくわけである。実際にこれはフィボナッチ数列になる。
+          </p>
+          <p class="lead">
+          フィボナッチであることを示すためにはいろいろな方法があるが、（げんげん氏は漸化式でやったのかと思われる）
+          今回は母関数でやる方法を考えた。「フィボナッチ数列　二項係数　母関数」とググったらすぐに詳細が出てくるので、大体の流れだけ書くと、
+          $$f(x)=\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}{}_{n-k}C_{k}x^n$$
+          という関数の正体をわかればいいということである。母関数が一致しているならばもとの数列も一致している。（注：級数が収束するくらいに十分に$|x|$は小さいものとする。）
+          シグマの足す順番を以下のように変える。それは
+          </p>
+          <table class="table table-striped table-bordered">
+            <tr><td>x</td><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td><td><b>4</b></td><td><b>5</b></td></tr>
+            <tr><td><b>0</b></td><td>0</td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td></tr>
+            <tr><td><b>1</b></td><td>1</td><td>3</td><td>5</td><td>7</td><td>9</td><td>11</td></tr>
+            <tr><td><b>2</b></td><td>2</td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td></tr>
+            <tr><td><b>3</b></td><td>3</td><td>5</td><td>7</td><td>9</td><td>11</td><td>13</td></tr>
+            <tr><td><b>4</b></td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td><td>14</td></tr>
+            <tr><td><b>5</b></td><td>5</td><td>7</td><td>9</td><td>11</td><td>13</td><td>15</td></tr>
+          </table>
+          <p class="lead">から</p>
+          <table class="table table-striped table-bordered">
+            <tr><td>x</td><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td><td><b>4</b></td><td><b>5</b></td></tr>
+            <tr><td><b>0</b></td><td>0</td><td>1</td><td>2</td><td>3</td>><td>4</td><td>5</td></tr>
+            <tr><td><b>1</b></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+            <tr><td><b>2</b></td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+            <tr><td><b>3</b></td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td></tr>
+            <tr><td><b>4</b></td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+            <tr><td><b>5</b></td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+          </table>
+          <p class="lead">
+          というように変換する。すると元の式は
+          $$\sum_{n=0}^{\infty}\sum_{k=0}^{n}{}_{n}C_{k}x^{n+l}$$
+          $$=\sum_{n=0}^{\infty}(1+x)^nx^n$$
+          $$=\sum_{n=0}^{\infty}(x^2+x)^n$$
+          $$=\frac{1}{1-x-x^2}$$
+          このとき、$x^2+x-1=0$の解を$\alpha,\beta$とおくと、$\alpha+\beta=-1,\alpha\beta=-1$となり、
+          $$=\frac{1}{\alpha-\beta}\left(\frac{1}{\alpha -x}-\frac{1}{\beta -x}\right)$$
+          $$=\frac{1}{\alpha-\beta}\left(\frac{1}{\alpha}\frac{1}{1-\frac{x}{\alpha}}-\frac{1}{\beta}\frac{1}{1-\frac{x}{\beta}}\right)$$
+          $$=\frac{1}{\alpha-\beta}\sum_{n=0}^{\infty}\left(\alpha^{-n-1}x^{n}-\beta^{-n-1}x^n\right)$$
+          $$=\frac{1}{\alpha-\beta}\sum_{n=0}^{\infty}(-1)^{n+1}\left(\beta^{n+1}-\alpha^{n+1}\right)x^n$$
+          ここで、$\alpha=\frac{-1+\sqrt{5}}{2},\beta=\frac{-1-\sqrt{5}}{2}$であるから、
+          $$=\frac{1}{\sqrt{5}}\sum_{n=0}^{\infty}\left(\left(\frac{1+\sqrt{5}}{2}\right)^{n+1}-\left(\frac{1-\sqrt{5}}{2}\right)^{n+1}\right)x^n$$
+          $$=\sum_{n=0}^{\infty}F_{n+1}x^n$$
+          というようになる。
+          </p>
+          <p class="lead">
+          さて、この式をもとの問題に応用すると、壁にぶち当たる。というのもこれと同じ変換をやってしまうと、
+          $$\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{n^k}x^n=\sum_{n=0}^{\infty}\sum_{k=0}^{n}\frac{{}_{n}C_{k}}{(n+k)^k}x^{n+k}$$
+          となり、二項定理を使うことができない。$(n+k)^k$の変数の中身が$n+k$と$k$に依存しているためそれだけで解くことができなくなる。
+          </p>
+          <p class="lead">
+          そこで小さな発想の転換が必要になる。依存を打ち消すには分母の依存性をうまく対処しなければいけない。そこで自分がやったことはあえて独立変数を増やそうとしたということである。
+          $$g_{m,n}=\sum_{k=0}^{\lfloor\frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{m^k}$$
+          とおいて、
+          $$f_m(x)=\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}g_{m,n}x^n=\sum_{n=0}^{\infty}\sum_{k=0}^{\lfloor \frac{n}{2}\rfloor}\frac{{}_{n-k}C_{k}}{m^k}x^n$$
+          としたうえで$g_{m,n}$を求めて、その上で$g_{n,n}$を求めればいいということである。
+          実際このように変更した場合二項定理を使うことができる。
+          $$=f_m(x)=\sum_{n=0}^{\infty}\sum_{k=0}^{\infty}\frac{{}_{n}C_{k}}{m^k}x^{n+k}$$
+          $$=\sum_{n=0}^{\infty}\left(1+\frac{x}{m}\right)^nx^n$$
+          $$=\sum_{n=0}^{\infty}\left(x+\frac{x^2}{m}\right)^n$$
+          $$=\frac{1}{1-x-\frac{x^2}{m}}$$
+          $$=\frac{m}{m-mx-x^2}$$
+          よって分母を因数分解してというように（さっきやったのと同じ方法で）式を処理していくと、
+          $$g_{m,n}=\frac{1}{\sqrt{1+\frac{4}{m}}}\left(\left(\frac{1+\sqrt{1+\frac{4}{m}}}{2}\right)^{n+1}-\left(\frac{1-\sqrt{1+\frac{4}{m}}}{2}\right)^{n+1}\right)$$
+          というようになるので、与式は
+          $$g_{n,n}=\frac{1}{\sqrt{1+\frac{4}{n}}}\left(\left(\frac{1+\sqrt{1+\frac{4}{n}}}{2}\right)^{n+1}-\left(\frac{1-\sqrt{1+\frac{4}{n}}}{2}\right)^{n+1}\right)$$
+          というようになる。
+          </p>
+          <h2>講評</h2>
+          <p class="lead">
+          フィボナッチっぽいことには結構早い段階で気づいたが、そこから実際に解くにはかなり時間がかかったので方針を思いついても実行に時間がかかる難問である。（もちろんこんな問題を入試に出されたら死ぬ）
+          まあとにかく、数学でよくわからなくなったときの対処法ラキング上位に入っている「単純な場合を考える」と、「小さな値を代入して挙動を観察する」ということを守ればフィボナッチと関連があることを見抜くのはそう難しくはない。
+          そして変数を増やして複雑化しないと解けない問題という具体例を初めてみた気がする。
+          </p>
+          
+      <hr>
+      <a href="index.html">数学についての記事に戻る</a><br>
+      <a href="../index.html">トップに戻る</a>
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
 </html>

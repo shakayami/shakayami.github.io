@@ -12,63 +12,75 @@
   </script>
   <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
 </head>
-<body>
-  <h1>10<sup>9</sup>+7で割ったあまりを考えるプログラム</h1>
-<p>
-  競技プログラミングでは、10の9乗足す7で割った余りを求めるような問題が多く存在している。
-  それは答えが大きくなる問題についての対処であり、
-  なぜ10の９乗足す7なのかというとその数が素数だからである。
-</p>
-<p>
-  この手の問題は多くある上にわざわざ何回も同じプログラムを書くのは面倒なので、ライブラリみたいな形として残そうと思ったのがこの記事を書こうと思ったきっかけである。
-  アルゴリズムのアイディア自体は自分が考えたものではないのでそこは容赦してほしい。
-  また、言語はPython3を使用している。
-</p>
-<h2>プログラム</h2>
-<script src="https://gist.github.com/shakayami/c7eee28770ed2917d72df0eec5b2fa36.js"></script>
-剰余の法を変えるためには、変数characteristicの値を変更すれば良い。ただし変更したあとの値が素数でないとバグが発生する（未確認だけど）
-また、divideはexponenとtimesが両方定義されていないと使えないので、仮にコピペする場合はソースコードまるごと貼り付けたほうが無難。このコード自体は関数の宣言だけで終わっているので実行しても何も起こらない。
-<h2>プログラムの概要</h2>
-<ul>
-  <li>plus:足し算</li>
-  <li>minus:引き算</li>
-  <li>times:掛け算</li>
-  <li>exponen:累乗</li>
-  <li>divide:割り算</li>
-</ul>
-<h2>アルゴリズムのアイディア</h2>
-<ul>
-  <li>plus,minus,times:計算してから割って余りを求めるだけ</li>
-  <li>exponen:$a^b \mathrm{mod}\ p$を求めるために、まずは$b$を２進数表示にする。そこで$b=\sum_{i=1}^{k}2^{a_i},{a_1<\cdots < a_k,a_i\in\mathbb{N}}$となるとする。次に$a^{2^0}$から$a^{2^{a_k}}$までの数それぞれの$p$で割った余りを求める。
-  （これは前のリストの数を2乗して余りを求める作業を繰り返したら良い。）最後に$a^{2^{a_i}} \mathrm{mod}\ p=b_i$としたとき、$(\prod_{i=1}^{k}b_i) \mathrm{mod}\ p$を求めれば終了。
-  </li>
-  <li>
-    divide:フェルマーの小定理より、$a^{p-1}\equiv 1(\mathrm{mod} p)$が成立する。(ただし$p$は素数)
-    よって$a^{-1}\mathrm{mod}\ p\equiv a^{p-2}$であるため、これで計算することが可能。（exponenを使う。）
-  </li>
-</ul>
-つまり、変数characteristicの値が素数でないとうまくいかない理由はdivideでフェルマーの小定理を使用しているからである。
-（逆に言えば、divide以外はcharacteristicが素数でない場合でもうまくいく）
-<h2>計算量</h2>
-<ul>
-  <li>plus,minus,times:言うまでもなく$O(1)$</li>
-  <li>exponen:2進数リストを作るのに$O(\log{N})$,余りリストを作るのと、掛け合わせるのそれぞれともに$O(\log{N})$なので、最終的な計算量は$O(\log{N})$である。（ただし累乗の方に乗っている数を$N$とおいた。）</li>
-  <li>divide:exponenを使っているので最終的な計算量は$O(\log{P})$となる。</li>
-</ul>
-<h2>追記（2018年5月14日）</h2>
-<p>
-2018年4月28日に行われたAGC023(Atcoder Grand Contest 023)のCの問題についてなのだが、その問題を解くときに階乗の$P=10^9+7$に対する逆元を求める操作を行う。
-ただし$N\leq 10^6$の条件では上記の手法で逆元を求めると(自分の環境では)30秒以上かかってしまったのである。そもそも階乗を$P$で割った余りを$10^6$までで求める行為ですら0.5秒かかってしまうので、
-逆元ではその60倍の30秒ほどかかってしまいTLEとなる。これを避けるためには逆元の求め方を変えなくてはいけないのである。フェルマーの小定理ではなく、ユークリッドの互除法(不定方程式)を使用して余りを求めた方が速いのである。
-さらにその条件のもとで言語をPython3からPyPy3に変えなくてはACすることができない。(ACしたもののアドレスは<a href="https://beta.atcoder.jp/contests/agc023/submissions/2442747" target="_blank">これ</a>である。)競技プログラミングをPython3でやるようになって5ヶ月以上経ったのだが、DFSで呼び出し制限にかかったり、(C++と比べた上での)実行速度の遅さから
-少しずつ限界を感じ始めているところである。やはりC++への乗り換えが求められているのだろうと思う日々である。
-
-</p>
-<hr>
-<a href="index.html">戻る</a><br>
-<a href="../index.html">トップに戻る</a><br>
-
+<body style="background-color:silver;">
+  <div class="container" style="background-color:white;">
+    <h1>10<sup>9</sup>+7で割ったあまりを考えるプログラム</h1>
+    <p class="lead">
+      競技プログラミングでは、10の9乗足す7で割った余りを求めるような問題が多く存在している。
+      それは答えが大きくなる問題についての対処であり、
+      なぜ10の９乗足す7なのかというとその数が素数だからである。
+    </p>
+    <p class="lead">
+      この手の問題は多くある上にわざわざ何回も同じプログラムを書くのは面倒なので、ライブラリみたいな形として残そうと思ったのがこの記事を書こうと思ったきっかけである。
+      アルゴリズムのアイディア自体は自分が考えたものではないのでそこは容赦してほしい。
+      また、言語はPython3を使用している。
+    </p>
+    <h2>プログラム</h2>
+    <script src="https://gist.github.com/shakayami/c7eee28770ed2917d72df0eec5b2fa36.js"></script>
+    <p>
+      剰余の法を変えるためには、変数characteristicの値を変更すれば良い。ただし変更したあとの値が素数でないとバグが発生する（未確認だけど）
+      また、divideはexponenとtimesが両方定義されていないと使えないので、仮にコピペする場合はソースコードまるごと貼り付けたほうが無難。このコード自体は関数の宣言だけで終わっているので実行しても何も起こらない。
+    </p>
+    <h2>プログラムの概要</h2>
+    <ul class="lead">
+      <li>plus:足し算</li>
+      <li>minus:引き算</li>
+      <li>times:掛け算</li>
+      <li>exponen:累乗</li>
+      <li>divide:割り算</li>
+    </ul>
+    <h2>アルゴリズムのアイディア</h2>
+    <ul class="lead">
+      <li>plus,minus,times:計算してから割って余りを求めるだけ</li>
+      <li>exponen:$a^b \mathrm{mod}\ p$を求めるために、まずは$b$を２進数表示にする。そこで$b=\sum_{i=1}^{k}2^{a_i},{a_1<\cdots < a_k,a_i\in\mathbb{N}}$となるとする。次に$a^{2^0}$から$a^{2^{a_k}}$までの数それぞれの$p$で割った余りを求める。
+      （これは前のリストの数を2乗して余りを求める作業を繰り返したら良い。）最後に$a^{2^{a_i}} \mathrm{mod}\ p=b_i$としたとき、$(\prod_{i=1}^{k}b_i) \mathrm{mod}\ p$を求めれば終了。
+      </li>
+      <li>
+        divide:フェルマーの小定理より、$a^{p-1}\equiv 1(\mathrm{mod} p)$が成立する。(ただし$p$は素数)
+        よって$a^{-1}\mathrm{mod}\ p\equiv a^{p-2}$であるため、これで計算することが可能。（exponenを使う。）
+      </li>
+    </ul>
+    つまり、変数characteristicの値が素数でないとうまくいかない理由はdivideでフェルマーの小定理を使用しているからである。
+    （逆に言えば、divide以外はcharacteristicが素数でない場合でもうまくいく）
+    <h2>計算量</h2>
+    <ul class="lead">
+      <li>plus,minus,times:言うまでもなく$O(1)$</li>
+      <li>exponen:2進数リストを作るのに$O(\log{N})$,余りリストを作るのと、掛け合わせるのそれぞれともに$O(\log{N})$なので、最終的な計算量は$O(\log{N})$である。（ただし累乗の方に乗っている数を$N$とおいた。）</li>
+      <li>divide:exponenを使っているので最終的な計算量は$O(\log{P})$となる。</li>
+    </ul>
+    <h2>追記（2018年5月14日）</h2>
+    <p class="lead">
+      2018年4月28日に行われたAGC023(Atcoder Grand Contest 023)のCの問題についてなのだが、その問題を解くときに階乗の$P=10^9+7$に対する逆元を求める操作を行う。
+      ただし$N\leq 10^6$の条件では上記の手法で逆元を求めると(自分の環境では)30秒以上かかってしまったのである。そもそも階乗を$P$で割った余りを$10^6$までで求める行為ですら0.5秒かかってしまうので、
+      逆元ではその60倍の30秒ほどかかってしまいTLEとなる。これを避けるためには逆元の求め方を変えなくてはいけないのである。フェルマーの小定理ではなく、ユークリッドの互除法(不定方程式)を使用して余りを求めた方が速いのである。
+      さらにその条件のもとで言語をPython3からPyPy3に変えなくてはACすることができない。(ACしたもののアドレスは<a href="https://beta.atcoder.jp/contests/agc023/submissions/2442747" target="_blank">これ</a>である。)競技プログラミングをPython3でやるようになって5ヶ月以上経ったのだが、DFSで呼び出し制限にかかったり、(C++と比べた上での)実行速度の遅さから
+      少しずつ限界を感じ始めているところである。やはりC++への乗り換えが求められているのだろうと思う日々である。
+    </p>
+    <hr>
+    <a href="index.html">プログラミングの記事一覧に戻る</a><br>
+    <a href="../index.html">トップページに戻る</a><br>
+    <div style="height:64px;"></div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>  
 </body>
 </html>

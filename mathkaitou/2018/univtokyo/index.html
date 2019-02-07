@@ -1,54 +1,65 @@
 <html>
-<head>
-  <title>
-    Univtokyo
-  </title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-  <h1>東京大学の解答</h1>
-  <a href="Univtokyo.pdf" target="_blank">pdf版</a><br>
-  <h2>訂正</h2>
-  <h3>問1</h3>
-  <img src="0001.jpg" width="400" height="560">
-  <ul>
-    <li>発散の判定にこれ見よがしにε-δ論法みたいなことを使用していますが気にしないでください。</li>
-  </ul>
-  <h3>問2</h3>
-  <img src="0002.jpg" width="400" height="560">
-  <ul>
-    <li>答え自身は間違っていないとは思うのですが、条件を絞った後最終的に総当りで答えを導出したのであまり賢い回答に思えません。</li>
-  </ul>
-  <h3>問3</h3>
-  <img src="0003.jpg" width="400" height="560">
-  <br>
-  この問題はdesmosでシュミレーションしてみました。オレンジ色の領域は(s,t)の動きうる範囲であり、それに対応して点Rの存在領域(緑色)が決まります。
-  <iframe src="https://www.desmos.com/calculator/ldaloex620?embed" width="500px" height="500px" style="border: 1px solid #ccc" frameborder=0></iframe><br>
-  グラフのリンクは<a href="https://www.desmos.com/calculator/d3e5o0dx81" target="_blank">こちら</a>。<br>
-  余談ですがこの問題は重積分+ヤコビアンで解くと常にS(k)=2と出てしまい解くことができません。それは領域の重複部分を考慮できていないからと思われます。
-  <h3>問4</h3>
-  <img src="0004.jpg" width="400" height="560">
-  <ul>
-    <li>最後に領域を図示しているものが間違っています。(a,b)の条件はb&gt;-2a<sup>3</sup>,b&lt;1-3a<sup>2</sup>,a&gt;1となっていますが、その場合境界となる2曲線は交わっていて、更に言うならば接しています。(a=1でのそれぞれの微分係数は-6になる。)</li>
-    <li>この問題もdesmosでシミュレーションしています。<a href="https://www.desmos.com/calculator/vjpswam2jx" target="_blank">リンクはこちら</a>。</li>
-  </ul>
-  <iframe src="https://www.desmos.com/calculator/vjpswam2jx?embed" width="500px" height="500px" style="border: 1px solid #ccc" frameborder=0></iframe>
-  <h3>問5</h3>
-  <img src="0005.jpg" width="400" height="560">
-  <ul>
-    <li>|w+<span style="text-decoration: overline;">w</span>-1|/|w|を求めていないのでここで求めます。<br>
-      |w+<span style="text-decoration: overline;">w</span>-1|/|w|=|1+<span style="text-decoration: overline;">w</span>/w-1/w|<br>
-      =|1+z<sup>2</sup>-(z-1)<sup>2</sup>|=|2z|=2|z|=2
-    </li>
-  </ul>
-  <h3>問6</h3>
-  <img src="0006.jpg" width="400" height="560">
-  <ul>
-    <li>(4)において、|V|を計算する際に3S-2Tとすべきところを3S+2Tとして間違って計算しています。</li>
-  </ul>
-  <hr>
-  <a href="../index.html">2018年のページに戻る</a><br>
-  <a href="../../index.html">解答速報のページに戻る</a><br>
-  <a href="../../../index.html">トップページに戻る</a>
-</body>
+  <head>
+    <title>UnivTokyo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+        <h1>東京大学の解答</h1>
+      <a href="Univtokyo.pdf" target="_blank">pdf版</a><br>
+      <h2>訂正</h2>
+      <h3>問1</h3>
+      <img src="0001.jpg" width="400" height="560">
+      <ul>
+        <li>発散の判定にこれ見よがしにε-δ論法みたいなことを使用していますが気にしないでください。</li>
+      </ul>
+      <h3>問2</h3>
+      <img src="0002.jpg" width="400" height="560">
+      <ul>
+        <li>答え自身は間違っていないとは思うのですが、条件を絞った後最終的に総当りで答えを導出したのであまり賢い回答に思えません。</li>
+      </ul>
+      <h3>問3</h3>
+      <img src="0003.jpg" width="400" height="560">
+      <br>
+      この問題はdesmosでシュミレーションしてみました。オレンジ色の領域は(s,t)の動きうる範囲であり、それに対応して点Rの存在領域(緑色)が決まります。
+      <iframe src="https://www.desmos.com/calculator/ldaloex620?embed" width="500px" height="500px" style="border: 1px solid #ccc" frameborder=0></iframe><br>
+      グラフのリンクは<a href="https://www.desmos.com/calculator/d3e5o0dx81" target="_blank">こちら</a>。<br>
+      余談ですがこの問題は重積分+ヤコビアンで解くと常にS(k)=2と出てしまい解くことができません。それは領域の重複部分を考慮できていないからと思われます。
+      <h3>問4</h3>
+      <img src="0004.jpg" width="400" height="560">
+      <ul>
+        <li>最後に領域を図示しているものが間違っています。(a,b)の条件はb&gt;-2a<sup>3</sup>,b&lt;1-3a<sup>2</sup>,a&gt;1となっていますが、その場合境界となる2曲線は交わっていて、更に言うならば接しています。(a=1でのそれぞれの微分係数は-6になる。)</li>
+        <li>この問題もdesmosでシミュレーションしています。<a href="https://www.desmos.com/calculator/vjpswam2jx" target="_blank">リンクはこちら</a>。</li>
+      </ul>
+      <iframe src="https://www.desmos.com/calculator/vjpswam2jx?embed" width="500px" height="500px" style="border: 1px solid #ccc" frameborder=0></iframe>
+      <h3>問5</h3>
+      <img src="0005.jpg" width="400" height="560">
+      <ul>
+        <li>|w+<span style="text-decoration: overline;">w</span>-1|/|w|を求めていないのでここで求めます。<br>
+          |w+<span style="text-decoration: overline;">w</span>-1|/|w|=|1+<span style="text-decoration: overline;">w</span>/w-1/w|<br>
+          =|1+z<sup>2</sup>-(z-1)<sup>2</sup>|=|2z|=2|z|=2
+        </li>
+      </ul>
+      <h3>問6</h3>
+      <img src="0006.jpg" width="400" height="560">
+      <ul>
+        <li>(4)において、|V|を計算する際に3S-2Tとすべきところを3S+2Tとして間違って計算しています。</li>
+      </ul>
+      <hr>
+      <a href="../index.html">2018年のページに戻る</a><br>
+      <a href="../../index.html">解答速報のページに戻る</a><br>
+      <a href="../../../index.html">トップページに戻る</a>
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
 </html>

@@ -1,81 +1,99 @@
 <html>
-<head>
-  <title>
-    converge nnn
-  </title>
-  <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    processEscapes: true
-  },
-  CommonHTML: { matchFontHeight: false }
-});
-</script>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-  <h1>Σn!/n^nの積分について</h1>
-  注：このページはmathjaxを使用して数式を書いています。
-  <!--
-  pdf版は<a href="nnn.pdf" target="_blank">こちら</a>。
--->
-  <h2>訂正情報</h2>
-  <h2>要旨</h2>
-  $$\sum_{n=1}^{\infty}\frac{n!}{n^n}$$
-  という級数が収束するか、収束するならばいくつになるかについて考察した。
-  <h2>収束性について</h2>
-  ダランベールの判定法を使う。$a_n=n!/n^n$とすると、
-  $$
-  \frac{a_{n+1}}{a_n}=\frac{(n+1)!}{(n+1)^{n+1}}\frac{n^n}{n!}=\left(1-\frac{1}{n+1}\right)^n\to\frac{1}{e}< 1
-  $$
-  より、ダランベールの判定法より収束することが示された。
-  <h2>具体的な値について</h2>
-  次の等式が成り立つ
-  $$\sum_{n=1}^{\infty}\frac{n!}{n^n}=\int_{0}^{1}\frac{dx}{(1+x\log{x})^2}$$
-  以下証明
-  Γ関数の性質から、
-  $$
-  (n-1)!=\int_{0}^{\infty}t^{n-1}\exp{(-t)} dt
-  $$
-  が成立する。
-  これを適当に置換すると
-  $$
-  \frac{(n-1)!(-1)^{n-1}}{n^{n}}=\int_{0}^{1}x^{n-1}(\log{x})^{n-1}dx
-  $$
-  より、
-  $$
-  \frac{n!}{n^n}=(-1)^{n-1}n\int_{0}^{1}x^{n-1}(\log{x})^{n-1}dx
-  $$
-  となる。ここで、関数列$f_n:I=[0,1]\to\mathbb{R}$を、
-  $$
-  f_n(x)=(-1)^{n-1}nx^{n-1}(\log{x})^{n-1}
-  $$
-  とおくと、$|x\log{x}|<\frac{1}{e}(x\in I)$より、$x\in I$上で不等式
-  $$
-  |f_n(x)|\leq M_n=n\exp{(-n+1)}
-  $$
-  であり、$\sum_{n=1}^{\infty}M_n=\frac{e^2}{(e-1)^2}<\infty$より、
-  <br>
-  ワィエルシュトラスの有級数判定法から
-  $$
-  \sum_{n=1}^{\infty}f_n(x)
-  $$
-  は$I=[0,1]$上で一様収束する。よって項別微分することができるので、
-  $$
-  \sum_{n=1}^{\infty}\frac{n!}{n^n}=\sum_{n=1}^{\infty}\int_{0}^{1}f_n(x) dx=
-  \int_{0}^{1}\sum_{n=1}^{\infty}f_n(x)dx=\int_{0}^{1}\frac{dx}{(1+x\log(x))^2}
-  $$
-  となる。
-  <h2>これを書くに至ったきっかけ</h2>
-  2017年5月某日、ダランベールの判定法の使用例として出てきたこの級数だが、具体的な値はどのように収束するのかについての質問が上がった際、講師の人が答えることができなかった。よってこれについて少し考察してみようとしたのがこのページを執筆するに至ったきっかけである。
-  <h2>参考文献</h2>
-  <ul>
-    <li><a href ="https://ja.wikipedia.org/wiki/%E4%BA%8C%E5%B9%B4%E7%94%9F%E3%81%AE%E5%A4%A2">二年生の夢 - Wikipedia</a></li>
-  </ul>
-  <hr>
-  <a href="index.html">数学の記事一覧に戻る</a><br>
-  <a href="../index.html">トップに戻る</a>
-</body>
+  <head>
+    <title>converge nnn</title>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        },
+        CommonHTML: { matchFontHeight: false }
+      });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>  
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+        <h1>Σn!/n^nの積分について</h1>
+        注：このページはmathjaxを使用して数式を書いています。
+        <!--
+        pdf版は<a href="nnn.pdf" target="_blank">こちら</a>。
+        -->
+        <h2>要旨</h2>
+        <p class="lead">
+          $$\sum_{n=1}^{\infty}\frac{n!}{n^n}$$
+          という級数が収束するか、収束するならばいくつになるかについて考察した。
+        </p>
+        <h2>収束性について</h2>
+        <p class="lead">
+          ダランベールの判定法を使う。$a_n=n!/n^n$とすると、
+          $$
+          \frac{a_{n+1}}{a_n}=\frac{(n+1)!}{(n+1)^{n+1}}\frac{n^n}{n!}=\left(1-\frac{1}{n+1}\right)^n\to\frac{1}{e}< 1
+          $$
+          より、ダランベールの判定法より収束することが示された。
+        </p>
+        <h2>具体的な値について</h2>
+        <p class="lead">
+        次の等式が成り立つ
+        $$\sum_{n=1}^{\infty}\frac{n!}{n^n}=\int_{0}^{1}\frac{dx}{(1+x\log{x})^2}$$
+        以下証明
+        Γ関数の性質から、
+        $$
+        (n-1)!=\int_{0}^{\infty}t^{n-1}\exp{(-t)} dt
+        $$
+        が成立する。
+        これを適当に置換すると
+        $$
+        \frac{(n-1)!(-1)^{n-1}}{n^{n}}=\int_{0}^{1}x^{n-1}(\log{x})^{n-1}dx
+        $$
+        より、
+        $$
+        \frac{n!}{n^n}=(-1)^{n-1}n\int_{0}^{1}x^{n-1}(\log{x})^{n-1}dx
+        $$
+        となる。ここで、関数列$f_n:I=[0,1]\to\mathbb{R}$を、
+        $$
+        f_n(x)=(-1)^{n-1}nx^{n-1}(\log{x})^{n-1}
+        $$
+        とおくと、$|x\log{x}|<\frac{1}{e}(x\in I)$より、$x\in I$上で不等式
+        $$
+        |f_n(x)|\leq M_n=n\exp{(-n+1)}
+        $$
+        であり、$\sum_{n=1}^{\infty}M_n=\frac{e^2}{(e-1)^2}<\infty$より、
+        ワィエルシュトラスの有級数判定法から
+        $$
+        \sum_{n=1}^{\infty}f_n(x)
+        $$
+        は$I=[0,1]$上で一様収束する。よって項別積分することができるので、
+        $$
+        \sum_{n=1}^{\infty}\frac{n!}{n^n}=\sum_{n=1}^{\infty}\int_{0}^{1}f_n(x) dx=
+        \int_{0}^{1}\sum_{n=1}^{\infty}f_n(x)dx=\int_{0}^{1}\frac{dx}{(1+x\log(x))^2}
+        $$
+        となる。
+        </p>
+        <h2>これを書くに至ったきっかけ</h2>
+        <p class="lead">
+        2017年5月某日、ダランベールの判定法の使用例として出てきたこの級数だが、具体的な値はどのように収束するのかについての質問が上がった際、講師の人が答えることができなかった。よってこれについて少し考察してみようとしたのがこのページを執筆するに至ったきっかけである。
+        </p>
+        <h2>参考文献</h2>
+        <ul>
+          <li><a href ="https://ja.wikipedia.org/wiki/%E4%BA%8C%E5%B9%B4%E7%94%9F%E3%81%AE%E5%A4%A2">二年生の夢 - Wikipedia</a></li>
+        </ul>
+        <hr>
+        <a href="index.html">数学の記事一覧に戻る</a><br>
+        <a href="../index.html">トップに戻る</a>
+
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
 </html>
