@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>unionfind</title>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true
+          },
+          CommonHTML: { matchFontHeight: false }
+        });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+      <h1>Python3でUnionFind木</h1>
+      <p class="lead">
+        競技プログラミングで出がちであるデータ構造のUnionFind木のPython3用のコードを書いてみた。競技プログラミングといえばC++の印象は大きいが、最近はPython使用勢が多いため、Pythonで競プロをやっている勢としてサンプルコードなどを公開していけたらと思っている。
+      </p>
+      <h2>ソースコード</h2>
+      <script src="https://gist.github.com/shakayami/d39b2d1ad837b5d4abc2705257bc90a3.js"></script>
+      <h2>使用例</h2>
+      <p class="lead">
+      まず、<a href="https://atcoder.jp/contests/atc001/tasks/unionfind_a" target="_blank">AtCoder Typical Contest 001 - B -Union Find</a>の解となるコードを書いてみた。すると
+      <a href="https://atcoder.jp/contests/atc001/submissions/4262727" target="_blank">このようになる。</a>（外部ページ）UnionFindのクラスは27行目までであって、それを除くと実質コードとしてあるのは11行である。つまり実際のコンテストでUnionFindを使う場面が出現したとき、クラスの部分だけコピー&ペーストすればかなり時間短縮になる。
+      ただこの例だとfind(x)の使用例までは網羅できていないため、もう一つ例を紹介する。
+      </p>
+      <blockquote class="twitter-tweet" data-conversation="none" data-lang="ja"><p lang="ja" dir="ltr">N頂点M辺からなる単純無向グラフがあり,頂点には1,...,Nと番号がついている.<br>k番目の辺はa_kとb_kとを結んでいる。<br>このとき,1≦i&lt;j≦Nであり,頂点iと頂点jへのパスが存在する頂点の組(i,j)の個数を求めよ.<br><br>制約:<br>N≦10^5,M≦10^5<br>1≦a_i&lt;b_i≦N(1≦i≦M),i≠jならば(a_i,b_i)≠(a_j,b_j)</p>&mdash; しゃかやみ (@shakayami_) <a href="https://twitter.com/shakayami_/status/1055841276199788544?ref_src=twsrc%5Etfw">2018年10月26日</a></blockquote>
+      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      <p class="lead">
+        Twitterに投稿した何気ない問題であるが、実はこれはUnionFind木を使う典型的な問題である。
+        UnionFindを初期化してすべての辺を繋げたとする。このとき、「find(x)==find(y)」と「xからyへのルートが存在する」が同値になる。
+        つまり、find(x)=kとなる頂点集合$X_k$をとってきたとき、$X_k$の任意の異なる2頂点に対してパスが存在する。よって各$k$に対して、${}_{|X_k|}C_2$を総和したものが答えとなる。
+      </p>
+      <p class="lead">
+        少し脱線するが、これは同値類について考えていると解釈することもできる。頂点集合$X=\{1,\ldots,N\}$について、2項関係$\sim$を、$x\sim y\Leftrightarrow$「$x$から$y$へのパスが存在する」とするとこの$\sim$は同値関係を満たす。(つまり、反射律・対称律・推移律を満たす)
+        よって同値関係による商集合$X/\sim$を定めることができる。ここでUnionFind木の特徴として$C(x)\in X/\sim$を適当に取ってきたとき、$\forall y,z\in C(x), \mathrm{find}(y)=\mathrm{find}(z)$が成立する。さらに$\mathrm{find}(x)=\mathrm{find}(y)\Leftrightarrow x\sim y$となるため、find関数を使うことで同値関係にあるかどうかを確かめることができる。
+        ここで、求める答えは
+        $$\#\{(x,y)\in X^2|x\sim y,x\neq y\}$$
+        だが、同じ同値類のものだけ考えれば良いので、
+        $$\sum_{k}\#\{(x,y)\in C(k)^2|x\sim y,x\neq y\}$$
+        だが、$x,y\in C(k)$なら$x\sim y$なので答えは
+        $$\sum_{k}\#\{(x,y)\in C(k)^2|x\neq y\}$$
+        としてよいということになる。
+      </p>
+      <p class="lead">
+        最後に使用例ということで例1と例2のコードを載せておく。
+      </p>
+      <script src="https://gist.github.com/shakayami/ca80a4cc03d8688980f71e3165da7056.js"></script>
+      <h2>参考文献</h2>
+      <ul class="lead">
+        <li>
+                プログラミングコンテストチャレンジブック [第2版]　～問題解決のアルゴリズム活用力とコーディングテクニックを鍛える　ー　著：秋葉 拓哉,岩田 陽一,北川 宜稔
+        </li>
+      </ul>
+      <hr>
+      <a href="index.html">プログラミングの記事一覧に戻る</a><br>
+      <a href="../index.html">トップページに戻る</a><br>
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>
