@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <title>inelastickinetic</title>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        processEscapes: true
+      },
+      CommonHTML: { matchFontHeight: false }
+      });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>  
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+      <h1>非弾性衝突による運動エネルギー総和の変化</h1>
+      最終更新:2020年2月11日
+      <!--
+      <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">左上から<br><br>・位置の分布　・速度の分布<br>・運動エネルギーの総和　・今までの総衝突回数<br><br>時間あたりの衝突回数はほぼ一定であり、<br>全体としての運動エネルギーは指数関数的に減っていく。 <a href="https://t.co/14J77oYxv7">pic.twitter.com/14J77oYxv7</a></p>&mdash; しゃかやみ (@shakayami_) <a href="https://twitter.com/shakayami_/status/1056535921808498695?ref_src=twsrc%5Etfw">October 28, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      -->
+      <br>
+      <a href="https://twitter.com/_/status/1056535921808498695" target="_blank">ツイートへのリンク</a><br>
+      ツイート動画には致命的なバグがあったので最新版については以下を参照してください。
+      <video src="SMA.mp4" controls width="600px" height="450px"></video>
+
+      <h2>概要</h2>
+      <p class="lead">
+        上記ツイートの補足をしようと思います。統計力学の要素が色々ありそうなので、物理に詳しい人に見てもらうことでいろいろな知見を得たい。なにかあればtwitterまでお願いします。twitterへのリンクについては<a href="../index.html">トップページ</a>の上のほうにあります。
+      </p>
+      <p class="lead">
+        粒子同士の衝突は非弾性衝突ですが、壁との衝突は完全弾性衝突です。
+      </p>
+      <p class="lead">
+        $e$:反発係数（ネイピア数と紛らわしい！）,$m$:粒子の質量,$L$:枠の一辺の長さ,$N$:粒子の総数,$r$:粒子の半径（当たり判定の大きさ）
+      </p>
+      <h2>注意事項</h2>
+      <p class="lead">
+        ミクロな系で考えると、非弾性衝突したときに失われたエネルギーはどこに行く？というような懸念がある。
+        そのことについては、あくまで思考実験なのでこのような仮想的なおもちゃがあると考えれば良い。それかビリヤードをしていると考えればOK
+      </p>
+      <h2>運動エネルギーが指数関数的に減っていくことについて</h2>
+      <p class="lead">
+        <strong>ここでは、単位時間あたりの系全体での衝突回数は一定であるものとして進める。</strong><br>
+        シミュレーションの結果からそのように仮定しても大きな問題はないと推測できます。
+      </p>
+      <br class="lead">
+      まずは2つの粒子の非弾性衝突について考える.質量が両方とも$m$で反発係数$e$,速度が$\vec{v_1},\vec{v_2}$であるような粒子が衝突して速度が$\vec{V_1},\vec{V_2}$に変化したと仮定する.
+      このとき,
+      \[m\vec{v_1}+m\vec{v_2}=m\vec{V_1}+m\vec{V_2}\]
+      \[-e(\vec{v_2}-\vec{v_1})=\vec{V_2}-\vec{V_1}\]
+      となる。これを計算すると（二元一次連立方程式なので）
+      \[\vec{V_1}=\frac{1-e}{2}\vec{v_1}+\frac{1+e}{2}\vec{v_2}\]
+      \[\vec{V_2}=\frac{1+e}{2}\vec{v_1}+\frac{1-e}{2}\vec{v_2}\]
+      ここから運動エネルギの変化量を求める.要は
+      \[\frac{1}{2}m(|\vec{V_1}|^2+|\vec{V_2}|^2-|\vec{v_1}|^2-|\vec{v_2}|^2)\]
+      であるため計算すると
+      \[=-\frac{1}{4}m(1-e^2)|\vec{v_1}-\vec{v_2}|^2\]
+      となる.
+      ここで運動エネルギー変化量が速度に依存していると不便なので仮定を追加する.
+      <strong>粒子の速度はマクスウェル分布に沿っていると仮定する.</strong><br>
+      $(v_{x},v_{y})\sim (v_{x}+\Delta v_{x},v_{y}+\Delta v_{y})$の中に属している分子の数が
+      \[\frac{1}{A}N\exp{\left(-b({v_x}^2+{v_y}^2)\right)}\Delta v_x \Delta v_y\]
+      個あるとする.ここで$A$については
+      \[\iint_{\mathbb{R}^2}\exp{\left(-b({v_x}^2+{v_y}^2)\right)}dv_x dv_y=A=\frac{\pi}{b}\]
+      を満たす.ここで$((v_{x1},v_{y1}),(v_{x2},v_{y2}))\sim ((v_{x1}+\Delta v_{x1},v_{y1}+\Delta v_{y1}),(v_{x2}+\Delta v_{x2},v_{y2}+\Delta v_{y2}))$の速度の粒子が衝突したときに減少する運動エネルギーについては,
+      \[c\frac{N^2}{A^2}\exp{\left(-b({v_{x1}}^2+{v_{y1}}^2+{v_{x2}}^2+{v_{y2}}^2)\right)}\cdot \frac{1}{4}m(1-e^2)\cdot\left((v_{x1}-v_{x2})^2+(v_{y1}-v_{y2})^2\right)\Delta v_{x1}\Delta v_{y1}\Delta v_{x2}\Delta v_{y2}\]
+      となる.ここで$c$は単位時間あたりの衝突回数が一定であることからくる定数である.
+      これを$(v_{x1},v_{y1},v_{x2},v_{y2})$について4重積分をすると,対称性より
+      \[\frac{-cm(1-e^2)N^2}{4A^2}\cdot 2\iint\exp{(-b(v_{y1}^2+v_{y2}^2))}dv_{y1}dv_{y2}\cdot\iint(v_{x1}-v_{x2})^2\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}\]
+      \[=\frac{-cm(1-e^2)N^2}{4A}\cdot 2\cdot\iint(v_{x1}-v_{x2})^2\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}\]
+      \[=\frac{-cm(1-e^2)N^2}{2A} \cdot\iint (v_{x1}^2+v_{x2}^2-2v_{x1}v_{x2})\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}\]
+      ここで,
+      \[\iint (v_{x1}^2+v_{x2}^2-2v_{x1}v_{x2})\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}\]
+      については対称性より
+      \[\iint 2v_{x1}^2\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}-\iint 2v_{x1}v_{x2}\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}\]
+      \[=2\int v_{x1}^2\exp{(-bv_{x1}^2)}dv_{x1}\cdot\int \exp{(-bv_{x2}^2)}dv_{x2}-2\left(\int v_{x1}\exp{(-bv_{x1}^2)}dv_{x1}\right)^2\]
+      第二項については奇関数なので実数全体で積分すると0になる.よって
+      \[=2\sqrt{\frac{\pi}{4b^3}}\cdot \sqrt{\frac{\pi}{b}}=\sqrt{\frac{\pi}{b^3}}\cdot \sqrt{\frac{\pi}{b}}=\frac{\pi}{b^2}\]
+      となる.よって
+      \[\frac{-cm(1-e^2)N^2}{2A} \cdot\iint (v_{x1}^2+v_{x2}^2-2v_{x1}v_{x2})\exp{(-b(v_{x1}^2+v_{x2}^2))}dv_{x1}dv_{x2}=\frac{-cm(1-e^2)N^2}{2A} \cdot \frac{\pi}{b^2}\]
+      $A=\frac{\pi}{b}$であるので
+      \[\frac{-cm(1-e^2)N^2}{2A} \cdot \frac{\pi}{b^2}=\frac{-cm(1-e^2)N^2}{2b}\]
+      よって
+      \[\frac{\Delta K}{\Delta t}=\frac{-cm(1-e^2)N^2}{2b}\]
+      となる.ここでもう一つ仮定を追加する.それは<strong>「マクスウェル分布の状態から,非弾性衝突をすることで速度分布が変化したとしても,変化後の速度分布は($b$の値が変わった)また別のマクスウェル分布となる」</strong>
+      である.この状況で系全体の運動エネルギー総和を$b$であらわす.これについては重積分すればOK
+      \[K=\iint \frac{N}{A}\exp{(-b({v_x}^2+{v_y}^2))}\cdot \frac{1}{2}m({v_x}^2+{v_y}^2)dv_x dv_y\]
+      \[=\frac{Nm}{A}\int {v_x}^2\exp{(-b{v_x}^2)}dv_x \cdot \int \exp{(-b{v_y}^2)}dv_y\]
+      \[=\frac{Nm}{A}\sqrt{\frac{\pi}{4b^3}}\sqrt{\frac{\pi}{b}}=\frac{Nm}{\pi/b}\frac{\pi}{2b^2}=\frac{Nm}{2b}\]
+      よって
+      \[\frac{\Delta K}{\Delta t}=-c(1-e^2)NK\]
+      であるため,$c(1-e^2)N$が定数なので微分方程式を解くと
+      \[K(t)=K_0\exp{\left(-c(1-e^2)Nt\right)}\]
+      となって運動エネルギーが指数関数的に減衰していることが導かれた.
+      </p>
+      <hr>
+      <a href="index.html">数学についての記事一覧に戻る</a></br>
+      <a href="../index.html">トップに戻る</a>
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>
