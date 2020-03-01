@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>HitotsubashiUniv</title>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          processEscapes: true
+        },
+        CommonHTML: { matchFontHeight: false }
+        });
+    </script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_CHTML"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+      <h1>一橋大学の解答</h1>
+      文系数学では一番難しいと思います。数IIIが欲しくなる。<br>
+      <a href="hitotsubashiuniv.pdf" target="_blank">pdf版</a><br>
+      <br>
+      <h2>各問題の解答と解説と訂正</h2>
+      <h3>問1</h3>
+      <img src="0001.jpg" width="400" height="560">
+      <p>
+        いきなりミスってますねぇ…<b>(1)は1920ではなく100が正解です。</b>
+        $10^n \mod 101$が$n\mod 4$で定まることに気づけば終わり
+      </p>
+      <h3>問2</h3>
+      <img src="0002.jpg" width="400" height="560">
+      <p>
+        $t=\tan{\theta}$とおいて解を求めるとうまくいく。$[0,\pi/2)\cup(\pi/2,\pi)\to\mathbb{R}$の対応は全単射になります。
+      </p>
+      <h3>問3</h3>
+      <img src="0003.jpg" width="400" height="560">
+      <p>
+        発想は楽しい問題。どこかの人がすでに作問してそうだけど。
+        頑張って変数の記述に落とし込んで一文字固定での最大化…これ本当に文系数学か？？？
+      </p>
+      <h3>問4</h3>
+      <img src="0004.jpg" width="400" height="560">
+      <p>
+        楽しい問題。$F(x)$を頑張って計算する（絶対値の挙動に注意）のはまあやるだけなのだけど、
+        最小化する際に実は微分しなくても良くて相加相乗平均が使えます。（この式見たら微分したいな～ってなる）
+        数3を知っていたら若干有利になりそうな気はする。<br>
+        あと前にどっかで炎上してたけど、<b>相加相乗平均で最小化問題を解く際には等号成立条件をチェックしなければいけない。</b>
+      </p>
+      <h3>問5</h3>
+      <img src="0005.jpg" width="400" height="560">
+      <p>
+        がんばって確率漸化式の立式をした後、$p_n$を求めずにそのまま$p_{n+1}-p_n$を求められてしまった。
+        たぶん$p_n$はいい感じの値に収束しそうな気はする。
+      </p>
+      <hr>
+      <a href="../index.html">2020年のページに戻る</a><br>
+      <a href="../../index.html">解答速報のページに戻る</a><br>
+      <a href="../../../index.html">トップページに戻る</a>
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>
