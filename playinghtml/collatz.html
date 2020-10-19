@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <title>collatz_problem</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script>
+        const wait = (sec) => {
+            return new Promise((resolve, reject) => {
+            setTimeout(resolve, sec*1000);
+            //setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
+            });
+        };
+        async function test(){
+            var x=parseInt(document.ff.inp.value);
+            document.getElementById("tt").innerHTML=""+x;
+            while(x>1){
+                if(x%2==0){
+                    x=x/2;
+                }
+                else{
+                    x=3*x+1;
+                }
+                document.getElementById("tt").innerHTML+=" "+x;
+                await wait(0.02);
+            }
+        }
+    </script>
+  </head>
+  <body style="background-color:silver;">
+    <div class="container" style="background-color:white;">
+      <h1>コラッツの問題</h1>
+      <p class="lead">
+        適当に数字を入力した後ボタンを押してみてください。
+      </p>
+      <p>
+        <form name="ff">
+            <input type="text" value="998244353" name="inp">
+            <input type="button" value="OK" onclick="test();">      
+        </form>
+        <div id="tt"></div>
+      </p>
+      <hr>
+      <a href="../index.html">HTMLで遊ぶリンクに戻る</a><br>
+      <a href="../index.html">トップに戻る</a>
+      <div style="height:64px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>
