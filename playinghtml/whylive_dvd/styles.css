@@ -1,0 +1,20 @@
+/* styles.css */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  background-color: #9ad9ea;
+}
+
+#container {
+  position: relative;
+}
+
+.char {
+  position: absolute;
+  font-size: 15vw;
+  color: black;
+}
