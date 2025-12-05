@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>闇のゲーム (NF杯2025 R問題)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .plate-anim {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar for logs and modal */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        /* Number input spin button styling */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4">
+
+    <!-- Help Button -->
+    <button onclick="toggleHelp()" class="fixed top-4 right-4 z-50 bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-full border border-slate-600 shadow-lg transition-transform hover:scale-110" aria-label="ルール説明">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    </button>
+
+    <!-- Header -->
+    <div class="max-w-3xl w-full text-center mb-6 space-y-1 mt-2">
+        <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 tracking-wider">
+            闇のゲーム (NF杯2025 R問題)
+        </h1>
+        <p class="text-slate-400 text-xs">生存ターン数: <span id="scoreTurn" class="text-white font-bold">1</span></p>
+    </div>
+
+    <!-- Main Game Container -->
+    <div class="max-w-3xl w-full relative">
+        
+        <!-- PHASE 1: DARK GAME (Adding Plates) -->
+        <div id="darkGameSection" class="bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-2xl transition-all duration-500">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                <h2 class="text-xl text-indigo-400 font-bold flex items-center gap-2">
+                    🌑 闇の儀式 <span class="text-xs font-normal text-slate-400">(Alice's Turn)</span>
+                </h2>
+                <div class="text-xs bg-indigo-900 text-indigo-200 px-2 py-1 rounded">皿を追加してください</div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="number" id="stoneInput" min="1" max="4095" 
+                        class="block w-full rounded-md bg-slate-900 border-slate-600 text-white focus:border-indigo-500 focus:ring-indigo-500 p-3 text-lg"
+                        placeholder="石の数 (1-4095)">
+                    <button onclick="playDarkTurn()" 
+                        class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-6 rounded-md transition duration-200 whitespace-nowrap">
+                        皿を置く
+                    </button>
+                </div>
+                <p id="errorMsg" class="text-red-400 text-sm hidden"></p>
+                
+                <div class="mt-6">
+                    <p class="text-sm text-slate-400 mb-2">現在の机の上:</p>
+                    <div id="darkPlatesList" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 min-h-[60px]">
+                        <div class="col-span-full text-center text-slate-600 italic py-4">皿はありません</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 2: LIGHT GAME (Nim) -->
+        <div id="lightGameSection" class="hidden bg-slate-900 rounded-xl p-6 border border-yellow-600/50 shadow-[0_0_30px_rgba(234,179,8,0.1)] relative overflow-hidden">
+            <!-- Background effect -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl text-yellow-400 font-bold flex items-center gap-2">
+                    ☀️ 光のゲーム <span class="text-xs font-normal text-slate-400">(Nim)</span>
+                </h2>
+                <div id="lightTurnIndicator" class="text-sm font-bold px-3 py-1 rounded bg-emerald-900 text-emerald-400">
+                    Aliceの手番
+                </div>
+            </div>
+
+            <p class="text-slate-300 text-sm mb-4">
+                Bobが選んだ皿で対戦します。石がなくなるまで交互に取り合い、<span class="text-red-400 font-bold">取れなくなった方が負け</span>です。
+                <br><span class="text-xs text-slate-500">※Aliceから開始します。</span>
+            </p>
+
+            <div id="lightPlatesArea" class="flex flex-wrap gap-4 justify-center mb-8">
+                <!-- Light Game Plates go here -->
+            </div>
+
+            <!-- Action Area for Light Game -->
+            <div id="lightActionArea" class="bg-slate-800 p-6 rounded-lg border border-slate-700 hidden shadow-lg">
+                <div class="flex flex-col gap-4 items-center">
+                    <div class="text-center text-white w-full">
+                        <span class="text-2xl font-bold text-yellow-400" id="selectedPlateCount">0</span> 個の石から
+                    </div>
+                    
+                    <div class="flex items-center gap-3 w-full justify-center">
+                        <input type="number" id="removeInput" min="1" step="1" 
+                            class="w-32 text-center bg-slate-900 border-2 border-slate-600 rounded-lg p-3 text-2xl font-bold text-red-400 focus:border-red-500 focus:ring-red-500 outline-none transition-colors"
+                            placeholder="1">
+                        <span class="text-lg text-slate-300 font-bold">個</span>
+                        <span class="text-lg text-slate-300">取り除く</span>
+                    </div>
+
+                    <div class="flex justify-center gap-4 mt-2 w-full">
+                        <button onclick="cancelMove()" class="flex-1 max-w-[120px] px-4 py-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded transition border border-transparent hover:border-slate-600">キャンセル</button>
+                        <button onclick="confirmAliceMove()" class="flex-1 max-w-[120px] px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded shadow-lg transition transform hover:scale-105">決定</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="bobThinking" class="hidden text-center py-4 text-yellow-400 animate-pulse">
+                Bobが思考中...
+            </div>
+        </div>
+
+        <!-- GAME OVER / WIN SCREEN -->
+        <div id="resultSection" class="hidden bg-slate-800 rounded-xl p-8 text-center border border-slate-600 mt-4 shadow-2xl">
+            <h2 id="resultTitle" class="text-4xl font-bold mb-2 text-red-500">GAME OVER</h2>
+            <p id="resultDesc" class="text-slate-300 mb-6 text-lg">Bobの勝利です。</p>
+
+            <div class="bg-slate-900 rounded p-4 mb-6 border border-slate-700 text-left max-w-md mx-auto">
+                <p class="text-xs text-slate-500 mb-1">最終的な皿の構成:</p>
+                <p id="finalPlatesStr" class="font-mono text-emerald-400 break-words text-sm leading-relaxed tracking-wide"></p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a id="shareBtn" href="#" target="_blank" class="bg-black hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-lg transition flex items-center justify-center gap-2 border border-slate-700">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                    結果をXでシェア
+                </a>
+                <button onclick="resetGame()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    最初からやり直す
+                </button>
+            </div>
+        </div>
+
+        <!-- Log Area -->
+        <div class="mt-6 bg-slate-950 rounded-lg border border-slate-800 p-4 h-48 overflow-y-auto font-mono text-sm shadow-inner" id="gameLog">
+            <div class="text-slate-500 border-l-2 border-slate-700 pl-2 mb-1">システム: 闇のゲームを開始します。</div>
+        </div>
+
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onclick="if(event.target === this) toggleHelp()">
+        <div class="bg-slate-900 border border-slate-700 p-6 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="toggleHelp()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <h2 class="text-2xl font-bold mb-6 text-indigo-400 border-b border-slate-700 pb-2">ルール説明</h2>
+            
+            <div class="space-y-4 text-slate-300 leading-relaxed text-sm sm:text-base">
+                <p>AliceとBobが <strong>闇のゲーム</strong> を行います．そのルールは以下の通りです．</p>
+
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>闇のゲーム開始時，机の上には何もない．</li>
+                    <li>各ターンを以下のように繰り返す．
+                        <ul class="list-circle pl-5 mt-2 space-y-2 text-slate-400">
+                            <li>Aliceは毎回のターンの始めに，机の上に 1 個以上 4095 個以下の石が乗った皿 1 枚を机の上に新たに置く（<em class="font-serif">n</em> 回目のターンでは机の上に <em class="font-serif">n</em> 枚目の皿を乗せる）．</li>
+                            <li>その後Bobは，机の上にある皿の中から 1 枚以上を選択する．ここで選択された皿を <strong>光の皿</strong> とよぶ．</li>
+                            <li>光の皿を用いて，AliceとBobが <strong>光のゲーム</strong> を行う．そのルールは以下の通り。
+                                <ul class="list-square pl-5 mt-2 space-y-2 text-slate-500">
+                                    <li>Aliceが先手となり，AliceとBobが交互に以下の操作を行う．
+                                        <ul class="pl-4 mt-1 border-l-2 border-slate-700">
+                                            <li>光の皿のうち石が 1 個以上乗っているものを 1 つ選び，その皿から 1 個以上の石を取り除く．</li>
+                                        </ul>
+                                    </li>
+                                    <li>自分の手番において，上の操作が行えなくなった方が負け，負けなかった方が勝ちとなる．</li>
+                                    <li>勝敗が決まったら，机の上を光のゲーム開始前に戻し，光のゲームを終了する．</li>
+                                </ul>
+                            </li>
+                            <li>Bobが光のゲームに勝った場合，闇のゲームも終了とする．</li>
+                            <li>Aliceが光のゲームに勝った場合，次のターンを開始する．</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <hr class="border-slate-700 my-4">
+
+                <div class="bg-slate-950 p-4 rounded text-xs text-slate-400 font-mono">
+                    <p class="mb-2">【元問題の数学的設定】</p>
+                    <p>Aliceが <em class="font-serif">i</em> 回目のターンの始めに机の上に新たに置いた皿に乗っている石の個数を <em class="font-serif">a<sub>i</sub></em> とします．</p>
+                    <p>闇のゲームにおいて，AliceとBobが最適戦略を取ったとします．すなわち，闇のゲームが終了するターンを <em class="font-serif">N</em> 回目のターンとするとき，Aliceは <em class="font-serif">N</em> を最大化，Bobは <em class="font-serif">N</em> を最小化するように行動します．このような場合について，正整数の組 <em class="font-serif">(a<sub>1</sub>, ..., a<sub>N</sub>)</em> として有り得るものの個数を <em class="font-serif">M</em> とします．</p>
+                    <p>gcd(6<sup>M</sup>, M) の正の約数の個数を解答してください．</p>
+                </div>
+
+                <div class="mt-6 pt-4 text-center">
+                    <a href="https://onlinemathcontest.com/contests/nfhai2025/tasks/15897" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-bold transition">
+                        元問題ページを開く (Online Math Contest)
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+                <hr class="border-slate-700 my-4">
+
+                <div>
+                    <p>クレジット</p>
+                    <p>問題原案：shakayami</p>
+                    <p>ページ作成：Gemini 3.0 Pro</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- HELP MODAL --- */
+        function toggleHelp() {
+            const modal = document.getElementById('helpModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling bg
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        /* --- STATE MANAGEMENT --- */
+        const MAX_STONES = 4095;
+        let turn = 1;
+        let darkPlates = []; // Array of numbers
+        
+        // Light Game State
+        let lightPlates = []; // Array of objects { originalIndex: int, current: int }
+        let currentLightTurn = 'Alice'; // 'Alice' or 'Bob'
+        let selectedPlateIndex = -1; // Index in lightPlates
+
+        /* --- LOGGING --- */
+        function log(msg, type = 'info') {
+            const logArea = document.getElementById('gameLog');
+            const div = document.createElement('div');
+            let color = 'text-slate-300 border-slate-600';
+            if (type === 'alice') color = 'text-emerald-400 border-emerald-600';
+            if (type === 'bob') color = 'text-yellow-400 border-yellow-600';
+            if (type === 'system') color = 'text-indigo-400 border-indigo-600';
+            if (type === 'error') color = 'text-red-400 border-red-600';
+
+            div.className = `pl-2 border-l-2 mb-1 ${color}`;
+            div.textContent = `[T${turn}] ${msg}`;
+            logArea.prepend(div);
+        }
+
+        /* --- DARK GAME LOGIC --- */
+        function playDarkTurn() {
+            const input = document.getElementById('stoneInput');
+            const val = parseInt(input.value);
+            const err = document.getElementById('errorMsg');
+
+            if (isNaN(val) || val < 1 || val > MAX_STONES) {
+                err.textContent = `1から${MAX_STONES}の間で指定してください。`;
+                err.classList.remove('hidden');
+                return;
+            }
+            err.classList.add('hidden');
+
+            // Add plate
+            darkPlates.push(val);
+            log(`Aliceは ${val} 個の石を置いた。`, 'alice');
+            input.value = '';
+            renderDarkPlates();
+
+            // Bob chooses subset
+            setTimeout(() => {
+                bobChoosePlates();
+            }, 600);
+        }
+
+        function renderDarkPlates() {
+            const container = document.getElementById('darkPlatesList');
+            container.innerHTML = '';
+            if (darkPlates.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-slate-600 italic py-4">皿はありません</div>';
+                return;
+            }
+            darkPlates.forEach((p, idx) => {
+                const div = document.createElement('div');
+                div.className = 'bg-slate-700 rounded p-2 text-center border border-slate-600 relative';
+                div.innerHTML = `<span class="text-white font-bold">${p}</span>`;
+                container.appendChild(div);
+            });
+        }
+
+        function bobChoosePlates() {
+            // Find Zero XOR subset
+            const winningSubsetIndices = findZeroXorSubsetIndices(darkPlates);
+            let chosenIndices = [];
+
+            if (winningSubsetIndices.length > 0) {
+                // Bob wins logic (No hint logs)
+                chosenIndices = winningSubsetIndices;
+            } else {
+                // Random logic (No hint logs)
+                const n = darkPlates.length;
+                let subsetMask = 0;
+                while (subsetMask === 0) {
+                     subsetMask = Math.floor(Math.random() * (1 << n));
+                }
+                
+                for (let i = 0; i < n; i++) {
+                    if ((subsetMask >> i) & 1) {
+                        chosenIndices.push(i);
+                    }
+                }
+            }
+
+            // Transition to Light Game
+            startLightGame(chosenIndices);
+        }
+
+        /* --- LIGHT GAME LOGIC --- */
+        function startLightGame(indices) {
+            // Hide Dark, Show Light
+            document.getElementById('darkGameSection').classList.add('hidden');
+            document.getElementById('lightGameSection').classList.remove('hidden');
+            
+            // Setup State
+            lightPlates = indices.map(idx => ({
+                originalIndex: idx, // Not strictly needed for logic but good for tracking
+                current: darkPlates[idx]
+            }));
+            
+            const subsetVals = lightPlates.map(p => p.current).join(', ');
+            log(`光のゲーム開始。選択された皿: [${subsetVals}]`, 'system');
+
+            currentLightTurn = 'Alice';
+            updateLightUI();
+        }
+
+        function updateLightUI() {
+            const container = document.getElementById('lightPlatesArea');
+            container.innerHTML = '';
+
+            const indicator = document.getElementById('lightTurnIndicator');
+            if (currentLightTurn === 'Alice') {
+                indicator.textContent = "Aliceの手番";
+                indicator.className = "text-sm font-bold px-3 py-1 rounded bg-emerald-900 text-emerald-400 border border-emerald-700";
+            } else {
+                indicator.textContent = "Bobの手番";
+                indicator.className = "text-sm font-bold px-3 py-1 rounded bg-yellow-900 text-yellow-400 border border-yellow-700";
+            }
+
+            lightPlates.forEach((plate, idx) => {
+                if (plate.current === 0) return; // Don't show empty plates
+
+                const btn = document.createElement('button');
+                // Styling
+                let baseClass = "relative w-20 h-24 rounded-lg flex flex-col items-center justify-center border-2 transition-all duration-200 shadow-lg ";
+                if (currentLightTurn === 'Alice') {
+                    baseClass += "bg-slate-700 border-indigo-500 hover:bg-slate-600 hover:scale-105 cursor-pointer";
+                } else {
+                    baseClass += "bg-slate-700 border-slate-600 cursor-default opacity-80";
+                }
+                
+                if (selectedPlateIndex === idx) {
+                    baseClass += " ring-4 ring-red-500 scale-105";
+                }
+
+                btn.className = baseClass;
+                btn.onclick = () => selectPlate(idx);
+                
+                // Content
+                btn.innerHTML = `
+                    <div class="text-3xl font-bold text-white">${plate.current}</div>
+                    <div class="text-[10px] text-slate-400 mt-1">Plate #${idx+1}</div>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Win Condition Check
+            const totalStones = lightPlates.reduce((sum, p) => sum + p.current, 0);
+            if (totalStones === 0) {
+                endLightGame(currentLightTurn === 'Alice' ? 'Bob' : 'Alice'); // Previous player took last stone
+            } else if (currentLightTurn === 'Bob') {
+                // Trigger Bob AI
+                document.getElementById('bobThinking').classList.remove('hidden');
+                document.getElementById('lightActionArea').classList.add('hidden');
+                setTimeout(bobMove, 1500);
+            }
+        }
+
+        function selectPlate(idx) {
+            if (currentLightTurn !== 'Alice') return;
+            selectedPlateIndex = idx;
+            
+            // Show Action Area
+            const actionArea = document.getElementById('lightActionArea');
+            const input = document.getElementById('removeInput');
+            const countDisplay = document.getElementById('selectedPlateCount');
+
+            actionArea.classList.remove('hidden');
+            
+            const max = lightPlates[idx].current;
+            input.max = max;
+            input.value = 1;
+            countDisplay.textContent = max;
+            
+            // Auto focus on input for better UX
+            setTimeout(() => input.focus(), 50);
+
+            // Input Validation Listener
+            input.oninput = function() {
+                let val = parseInt(this.value);
+                if (val > max) this.value = max;
+                if (val < 1 && this.value !== "") this.value = 1;
+            };
+
+            updateLightUI(); // Re-render to show highlight
+        }
+
+        function cancelMove() {
+            selectedPlateIndex = -1;
+            document.getElementById('lightActionArea').classList.add('hidden');
+            updateLightUI();
+        }
+
+        function confirmAliceMove() {
+            if (selectedPlateIndex === -1) return;
+            
+            const input = document.getElementById('removeInput');
+            let removeAmount = parseInt(input.value);
+            const plate = lightPlates[selectedPlateIndex];
+            
+            // Validation
+            if (isNaN(removeAmount) || removeAmount < 1) {
+                input.focus();
+                return;
+            }
+            if (removeAmount > plate.current) {
+                removeAmount = plate.current; // Clamp
+            }
+
+            log(`Aliceは皿から ${removeAmount} 個取り除いた (残: ${plate.current - removeAmount})`, 'alice');
+            
+            plate.current -= removeAmount;
+            selectedPlateIndex = -1;
+            document.getElementById('lightActionArea').classList.add('hidden');
+            
+            currentLightTurn = 'Bob';
+            updateLightUI();
+        }
+
+        function bobMove() {
+            document.getElementById('bobThinking').classList.add('hidden');
+            
+            // Nim Strategy
+            // 1. Calc Nim Sum
+            let nimSum = 0;
+            lightPlates.forEach(p => nimSum ^= p.current);
+
+            let targetIdx = -1;
+            let removeAmount = 0;
+
+            if (nimSum !== 0) {
+                // Winning position available (Bob plays optimally)
+                for (let i = 0; i < lightPlates.length; i++) {
+                    const p = lightPlates[i].current;
+                    if ((p ^ nimSum) < p) {
+                        targetIdx = i;
+                        removeAmount = p - (p ^ nimSum);
+                        break;
+                    }
+                }
+            } else {
+                // Losing position. Bob picks random
+                const validPlatesIndices = [];
+                lightPlates.forEach((p, i) => {
+                    if (p.current > 0) {
+                        validPlatesIndices.push(i);
+                    }
+                });
+
+                if (validPlatesIndices.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * validPlatesIndices.length);
+                    targetIdx = validPlatesIndices[randomIndex];
+                    const plate = lightPlates[targetIdx];
+                    removeAmount = Math.floor(Math.random() * plate.current) + 1;
+                }
+            }
+
+            if (targetIdx !== -1) {
+                lightPlates[targetIdx].current -= removeAmount;
+                log(`Bobは皿から ${removeAmount} 個取り除いた (残: ${lightPlates[targetIdx].current})`, 'bob');
+            }
+
+            currentLightTurn = 'Alice';
+            updateLightUI();
+        }
+
+        function endLightGame(winner) {
+            document.getElementById('lightGameSection').classList.add('hidden');
+            
+            if (winner === 'Alice') {
+                log('Aliceは光のゲームに勝利した。', 'system');
+                // Return to Dark Game
+                turn++;
+                document.getElementById('scoreTurn').textContent = turn;
+                document.getElementById('darkGameSection').classList.remove('hidden');
+                log(`--- ターン ${turn} 開始 ---`, 'system');
+            } else {
+                log('Bobが光のゲームに勝利した。', 'bob');
+                
+                // Show Result Screen
+                document.getElementById('resultSection').classList.remove('hidden');
+                document.getElementById('resultDesc').innerHTML = `
+                    Aliceの敗北です。<br>
+                    <span class="text-sm text-slate-400">生存ターン: ${turn}</span>
+                `;
+
+                // Show Final Plates Sequence
+                const platesStr = darkPlates.join(', ');
+                document.getElementById('finalPlatesStr').textContent = `[${platesStr}]`;
+
+                // Create Share URL
+                const text = `闇のゲームでBobに敗北...\n生存ターン: ${turn}\n最終的な皿: [${platesStr}]\n#闇のゲーム #NF杯2025`;
+                const url = window.location.href; // Uses current URL
+                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                document.getElementById('shareBtn').href = shareUrl;
+            }
+        }
+
+        /* --- UTILS --- */
+        function findZeroXorSubsetIndices(arr) {
+            const n = arr.length;
+            const limit = 1 << n; // 2^n
+            for (let i = 1; i < limit; i++) {
+                let currentXor = 0;
+                let indices = [];
+                for (let j = 0; j < n; j++) {
+                    if ((i >> j) & 1) {
+                        currentXor ^= arr[j];
+                        indices.push(j);
+                    }
+                }
+                if (currentXor === 0) return indices;
+            }
+            return [];
+        }
+
+        function resetGame() {
+            turn = 1;
+            darkPlates = [];
+            document.getElementById('scoreTurn').textContent = turn;
+            document.getElementById('gameLog').innerHTML = '<div class="text-slate-500 border-l-2 border-slate-700 pl-2 mb-1">システム: 闇のゲームを開始します。</div>';
+            
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('darkGameSection').classList.remove('hidden');
+            document.getElementById('lightGameSection').classList.add('hidden');
+            
+            renderDarkPlates();
+        }
+
+        // Init
+        renderDarkPlates();
+        
+        // Enter key shortcut
+        document.getElementById('stoneInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') playDarkTurn();
+        });
+        
+        // Allow Enter key on removeInput as well
+        document.getElementById('removeInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') confirmAliceMove();
+        });
+
+    </script>
+</body>
+</html>
